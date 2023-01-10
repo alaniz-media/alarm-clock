@@ -2,7 +2,6 @@
 """
 
 import logging
-import sys
 import time
 
 import requests
@@ -58,7 +57,7 @@ def get_video_url(url: str) -> str:
     parse_with_beautiful_soup = False
     if parse_with_beautiful_soup:
         # TODO: This is non-deterministic. It will BOTH waste time and end up breaking when something
-        # eventually takes more than 20 seconds. This may not even be waiting in a useful spot.
+        # eventually takes more than 13 seconds.
         # See: https://selenium-python.readthedocs.io/waits.html
         print("WARNING: Arbitrarily sleeping for 13 seconds. See code for alternatives to this.")
         time.sleep(13)
@@ -84,7 +83,7 @@ def get_video_url(url: str) -> str:
         """
 
         # TODO: This is non-deterministic. It will BOTH waste time and end up breaking when something
-        # eventually takes more than 20 seconds. This may not even be waiting in a useful spot.
+        # eventually takes more than 20 seconds.
         # See: https://selenium-python.readthedocs.io/waits.html
         print("WARNING: Arbitrarily sleeping for 20 seconds. See code for alternatives to this.")
         time.sleep(20)
@@ -121,23 +120,5 @@ def download_content(url: str, output: str = "av"):
     """
     video_url = get_video_url(url)
     rsp = requests.get(video_url)
-    # TODO: Get a video name from the user or from the page.
-    print("WARNING: This is going to save as just 'exported_video.mp4'.")
-    with open("exported_video.mp4", 'wb') as video:
-        video.write(rsp.content)
-
-
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("ERROR: Must pass in URL to scrape. Optionally pass 2nd param: a,v, or av")
-        print("example: python3 ./scraper/web_scraper.py https://www.tiktok.com/t/ZTRgF1U9M/ v")
-        sys.exit(1)
-
-    url = sys.argv[1]
-    # url = "https://www.xignite.com/xRates.json/GetRate"
-    url = "https://www.tiktok.com/t/ZTRgF1U9M/"
-    output_format = "av"
-    if len(sys.argv) == 3:
-        output_format = sys.argv[2]
-
-    download_content(url, output_format)
+    video_file = rsp.content
+    return video_file
